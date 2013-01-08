@@ -1,19 +1,8 @@
 Homework for Chapter 2 of Learning MySQL (2006 edition), from p. 94:
 
-Exercises:
-1) What is command completion?
-
-2) What are the relative advantages of installing MySQL using the package,
- directory archive (tarball or "no-install", or compiled methods?
-
-3) How do you verify the integrity of downloaded packages?
-
-4) How do you add the MySQL bin directory to the operating system path?
-
-Additional Exercises (not in the book): 
-1) Document how you installed MySQL and any issues you came across with installation. 
- (The goal is to be easy to install it again on a similar machine.)
-
-2) Document where important files should be.
+Exercises:1) What is command completion?When one starts to type the name of a command, file or directory, one can use the Tab to cycle through possible names that it could match.2) What are the relative advantages of installing MySQL using the package, directory archive (tarball or "no-install", or compiled methods?	• Compiling the software can give one access to the most current software and optimize everything for one’s particular needs, but seems more suited to power users than to newbies.  
+	• A tarball has all the necessary system files in place, in the needed directories.  
+	• It appears no install option can be useful on Windows if one doesn't have admin access.  
+	• Using a package means that in addition to having all the files stored in a consistent fashion, the installation is all set up by the installation software.  This is what I used on the mac and it was fairly painless.3) How do you verify the integrity of downloaded packages?By verifying the MD5 checksum of the download vs. what is listed on the site you are downloading from. 4) How do you add the MySQL bin directory to the operating system path?Well, funny you should ask.For a Mac, the book suggests adding  	export PATH=$PATH:/usr/local/mysql/bin:to “.bashrc”Well, this isn’t the place the mac goes to in OS version 10.6.I ended up adding this to the path file under in ~/etc and that seemed to do the trick. Of course, all this was hampered by my newbie slowness – I had to step back and figure out how to change file permissions so I can edit the files. I also had to figure out how to see files that start with a “.”	 Additional Exercises (not in the book): 1) Document how you installed MySQL and any issues you came across with installation.  (The goal is to be easy to install it again on a similar machine.)I used the dmg file on the mac. That got me most of the way there.As noted above, the path changes were a bit tricky. Some useful commands I learned include:	“ls – l”	“ls – a”	“pwd”Another struggle that I had was trying to run “mysqladmin status”. I kept getting:	mysqladmin: connect to server at 'localhost' failed	error: 'Access denied for user 'Lawrence'@'localhost' (using password: NO)'I wasted a number of cycles trying to sort this one this one out (all while resisting going down the hall to bug Tim for an answer). After much trial and error and web searching, these add-on options seemed to make seems work:	Mysqladmin status -u root -p -h localhostSame deal for MySQL	mysql -u root -p -h localhostI hope that this is “OK”. It seems a workable. If not a bit klugey, hack. 2) Document where important files should be.I am not sure what this means. Do you mean the data and index files? If so, those should be in the data directory
 
 Do not forget to do a pull request when your homework is complete.
