@@ -1,9 +1,48 @@
 1. What do we mean when we say that MySQL has a client-server architecture?
 
-2. Use the monitor help to look up information on the SELECT statement. (Weâ€™ll discuss SELECT in detail in Chapter 5.)
+	clients can connect to the server running MySQL to request arias operations (reading, storing data, etcÉ.)
 
-3. What is the difference between using the monitor in interactive mode and using
-the monitor in batch mode?
+2. Use the monitor help to look up information on the SELECT statement. (We'll discuss SELECT in detail in Chapter 5.)
+
+
+	mysql> SELECT VERSION();
+	+-----------+
+	| VERSION() |
+	+-----------+
+	| 5.5.29    |
+	+-----------+
+	1 row in set (0.00 sec)
+
+
+	mysql> SELECT User,Host FROM user;
+	+------+-----------+
+	| User | Host      |
+	+------+-----------+
+	| root | 127.0.0.1 |
+	| root | ::1       |
+	| root | localhost |
+	+------+-----------+
+	3 rows in set (0.00 sec)
+
+
+	mysql> SELECT COUNT(*) FROM user;
+	+----------+
+	| COUNT(*) |
+	+----------+
+	|        3 |
+	+----------+
+	1 row in set (0.01 sec)
+
+
+
+3. What is the difference between using the monitor in interactive mode and using the monitor in batch mode?
+
+	Interactive involves running and entering commands from the prompt. Doing a batch involves creating a separate file with a list of commands, loading this in, and then MySQL will run through them automatically. The batch method is helpful for scripts or sequences that one might want to run repeatedly., and/or when one has a large set of commands to run. 
+
 
 4. What do the monitor user, password, and database options do?
+
+	user - the username to use when connecting to the MySQL user. By Default this is the machine account name on a Mac OS System
+	password - password for the user
+	database - specifies the database to use. Saves one from having to specify this with the USE command after the monitor starts. 
 
