@@ -1,12 +1,20 @@
 1. When would you use a weak entity?
 
+If it relies on another entity entirely to exist and to identify it. For example, a child doesn't exist without a parent. In addition, part of a child's identity (ie, usually their last name) can be culled by their parent. 
+
 
 2. Is it better to use entities instead of attributes?
+
+Better seems a relative term. That's like asking is it better to use nouns than adjectives.
+
+If the item is of direct interest, or has components of its own, or has multiple instances, or may occasionally be non-existent, it should be an entity. 
 
 
 3. Alter and extend the music database ER model so that it can store 
 compilations, where a compilation is an album that contains tracks by two 
 or more different artists.
+
+--> See item in homework folder "Q3_LS_Homework.jpg"
 
 4. Create an ER diagram for an online media store using the following requirements:
  - There are two types of product: music CDs and video DVDs.
@@ -62,3 +70,5 @@ The .odg file was created on Open Office, but all compatibile programs can be se
 http://www.fileinfo.com/extension/odg
 
 Or you can just hand-draw diagrams for questions 3 and 4 and take a picture, as in the Diagram4_11.jpg file.
+
+--> See item in homework folder "Q4_LS_Homework.jpg"
