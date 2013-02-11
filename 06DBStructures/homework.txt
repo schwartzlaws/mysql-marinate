@@ -1,0 +1,153 @@
+Chapter 6 Homework
+
+All exercises here concern the music database. 
+
+1. You’ve decided to store more information about artists and albums. Specifically,
+for artists, you want to store the names of people who have worked with the artist
+(for example, vocalists, guitarists, trumpeters, and drummers), when they began
+working with the artist, and when they stopped working with the artist (if they
+have done so).
+
+For albums, you want to store the name of the album producer, when the album
+was released, and where the album was recorded. Design tables or columns that
+can store this information, and explain the advantages and disadvantages of your
+design. Choose the column types you need, explaining the advantages and disad-
+vantages of your choices.
+
+mysql> CREATE TABLE collaborator (artist_id SMALLINT (5) NOT NULL DEFAULT 0, collaborator_id SMALLINT(5) NOT NULL DEFAULT 0, collaborator_name CHAR (128) DEFAULT NULL, collaborator_role ENUM('vocalist','guitarist','trumpeter','drummer','other'), begin_collab_time DATE DEFAULT NULL, end_collab_time DATE DEFAULT NULL, PRIMARY KEY (artist_id, collaborator_id));
+Query OK, 0 rows affected (0.04 sec)
+
+EXPLANATION:
+	* artist_id -- follows format used in other tables in example of book.  Set up with a NOT NULL default since it is named in the primary key. 
+        * collaborator_id --similiar format to artist_id. Expect to have roughly as many collaborators as artists. Set up with a NOT NULL default since it is named in the primary key. 
+	* collaborator_name -- follows convention of artist_name -- up to 128 characters
+	* collaborator_role -- could be an open ended strong to enter, but I chose to do a list. Though not as flexible, I think this is useful for later for searching through the list for a few standard types. For example, if you want to see all the vocalists, it could be hard to sort through if someone enters them sometimes as a'vocalist', sometimes as a 'singer' etc�.
+	* begin_collab_time -- used the DATE field vs other date/time options. Did this since time of day of start/end of collaboration is not as important. Ditto for end_collab_time. 
+	* PRIMARY KEY -- used artist_id (as it used elsewhere) and a second key based on collabortor_id.  
+
+mysql> ALTER TABLE album ADD album_producer CHAR(128);
+Query OK, 13 rows affected (0.04 sec)
+Records: 13  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE album ADD album_released DATE;
+Query OK, 13 rows affected (0.02 sec)
+Records: 13  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE album ADD album_origin VARCHAR(40);
+Query OK, 13 rows affected (0.02 sec)
+Records: 13  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM album;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| artist_id      | smallint(5) | NO   | PRI | 0       |       |
+| album_id       | smallint(4) | NO   | PRI | 0       |       |
+| album_name     | char(128)   | YES  |     | NULL    |       |
+| album_producer | char(128)   | YES  |     | NULL    |       |
+| album_released | date        | YES  |     | NULL    |       |
+| album_origin   | varchar(40) | YES  |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+6 rows in set (0.01 sec)
+
+EXPLANATION:
+
+	* album_producer -- as above, assumed this could be about as large as an album_name;
+	* album_released -- as above, chose a basic date;
+	* album_origin -- Left the flexibility to have longer names, but figured that since city names average 10 characters (per page 204), leaving this variable can same space with a larger database. The trade-off vs. making it fixed is around speed, of which a fixed-length is better for performance, but worse for space. 
+
+
+2. There are five types for storing temporal data: DATETIME, DATE, TIME, YEAR, and
+TIMESTAMP. Explain what each is used for, and give an example of a situation in
+which you would choose to use it. Note that http://palominodb.com/blog/2011/05/23/datetime-vs-timestamp
+has some useful information too.
+
+	* YEAR - can store a two or 4 digit year
+	* DATE -- stores and displays a date in the format YYYY-MM-DD
+	* TIME -- Stores time in the format HHH:MM:SS 
+	* TIMESTAMP -- Stores and displays a date and time pair in the format YYYY-MM-DD HH:MM:SS. If you design a "NULL" to it, it is set to current date and time. It can also update  date and time upon insert or update. 
+	* DATETIME -- stores and splays a date and time pair in the format YYYY-MM-DD HH:MM:SS. Like timestamp, but without the auto update feature. 
+
+
+Going back to the music database idea, I could imagine the following scenarios. Most people only care about what year a song was released -- let's say you are VH1 doing a special on the 1980s one hit wonders. Only the YEAR would matter. Now, if you are record company trying to keep track of contracts, the full date of release for an album might matter, so DATE would be chosen. Digging in deeper, if one wants to list how long each track is on an album, then TIME makes the most sense -- it is also useful for summing up an entire album length. In terms of when a track is played, the TIMESTAAMP is useful, since that can be updated with the exact current data and time on the fly, upon an insert. As for DATETIME, that one is harder to imagine for a music database, but perhaps one could see it being used for an automatic setlist for 4th of July concert (ie, setting the time of a song to be played in the future to time to certain firework displays).  
+
+
+3. You’ve decided to use the AUTO_INCREMENT feature. List the three requirements that
+must be met by the column you’re applying it to.
+
+From page 209:
+
+	1. The column it is used on must be indexed
+	2. The column that it is used on cannot have a DEFAULT value
+	3. There can be only one AUTO_INCREMENT column per table
+
+
+4. Why can only one column in a table have the AUTO_INCREMENT feature?
+
+If multiple columns had an auto-increment, they would be filled with the same value. That makes the columns redundant.
+
+
+5. Using the monitor, create a table with the following statement:
+mysql> CREATE TABLE exercise (field1 INT(3));
+Using the ALTER TABLE statement, make field1 the primary key, carrying out any
+additional steps you need to make this possible. Add a second column, field2, of
+type CHAR(64) with a DEFAULT 5 clause. Create an index on a prefix of 10 characters
+from field2.
+
+
+
+mysql> CREATE TABLE exercise (field1 INT(3));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> SHOW COLUMNS FROM exercise;
++--------+--------+------+-----+---------+-------+
+| Field  | Type   | Null | Key | Default | Extra |
++--------+--------+------+-----+---------+-------+
+| field1 | int(3) | YES  |     | NULL    |       |
++--------+--------+------+-----+---------+-------+
+1 row in set (0.00 sec)
+
+mysql> ALTER TABLE exercise ADD PRIMARY KEY (field1);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM exercise;
++--------+--------+------+-----+---------+-------+
+| Field  | Type   | Null | Key | Default | Extra |
++--------+--------+------+-----+---------+-------+
+| field1 | int(3) | NO   | PRI | 0       |       |
++--------+--------+------+-----+---------+-------+
+1 row in set (0.00 sec)
+
+mysql> ALTER TABLE exercise ADD field2 CHAR(64) NOT NULL DEFAULT 5;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW COLUMNS FROM exercise;
++--------+----------+------+-----+---------+-------+
+| Field  | Type     | Null | Key | Default | Extra |
++--------+----------+------+-----+---------+-------+
+| field1 | int(3)   | NO   | PRI | 0       |       |
+| field2 | char(64) | NO   |     | 5       |       |
++--------+----------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> ALTER TABLE exercise ADD INDEX by_field2 (field2(10));
+Query OK, 0 rows affected (0.23 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SHOW CREATE TABLE exercise;
++----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table    | Create Table                                                                                                                                                                                                  |
++----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| exercise | CREATE TABLE `exercise` (
+  `field1` int(3) NOT NULL DEFAULT '0',
+  `field2` char(64) NOT NULL DEFAULT '5',
+  PRIMARY KEY (`field1`),
+  KEY `by_field2` (`field2`(10))
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
++----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+
+
