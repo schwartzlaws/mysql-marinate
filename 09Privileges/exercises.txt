@@ -1,0 +1,93 @@
+Exercises for chapter 9
+
+1) What’s the difference between a local and a remote user?
+
+Per page 309:
+
+A local user connects to the server and accesses the databases from the same computer that the MySQL server is running on (localhost).
+
+On the other hand, a remote user connects to the server and accesses the database from another computer.
+
+2) When would you grant only read access to a user?
+
+If someone just needs to read the data -- for example, to run reports, etc� - than read only access can insure that items don't accidentally (or maliciously) get deleted or altered. 
+
+
+3) Write a GRANT statement to create a user, rowena, who has privileges to execute 
+SELECT, UPDATE, and INSERT statements on the contacts and appointment databases. 
+The user should be allowed to access the server from machines in the domain invyhome.com.
+
+
+GRANT SELECT, UPDATE, INSERT ON contacts.*, appointment.* to 'rowena'@'*.invyhome.com';
+
+4) Write a GRANT statement that modifies the privileges of the user rowena created in 
+Question 3. Add privileges to SELECT from the customer table in the sales database, and to 
+SELECT the debtor column from the invoice table in the accounts database.
+
+GRANT SELECT ON sales.customer to 'rowena'@'*.invyhome.com';
+GRANT SELECT (debtor) ON accounts.invoice to 'rowena'@'*.invyhome.com';
+
+5) Three GRANT statements have been issued on your MySQL server:
+
+ GRANT ALL ON *.* TO 'hugh'@'hugh.invyhome.com';
+ GRANT SELECT, UPDATE, INSERT, DELETE ON *.* TO 'hugh'@'*.invyhome.com';
+ GRANT SELECT ON *.* TO ''@'localhost';
+
+ For each of the following attempts to connect to the server, state whether the connection is allowed and, if so, which user the client is connected as. Assume all connections are attempted from localhost:
+
+     a) mysql --user=hugh --host=localhost
+
+     b) mysql --user=fred
+
+     c) mysql
+
+Looking at the different combination
+
+GRANT ALL ON *.* to 'hugh'@'hugh.invyhom.com'
+--> Creates all access to this remote user
+	mysql --user=hugh --host=localhost  --> denied
+	mysql --user=fred --> denied
+	mysql --> denied
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON *.* TO 'hugh'@'*.invyhome.com';
+--> Creates certain privileges to hugh anywhere on this network (including, *I Think*, the local host)
+	mysql --user=hugh --host=localhost  --> allowed
+	mysql --user=fred --> denied
+	mysql --> allowed
+
+GRANT SELECT ON *.* TO ''@localhost';
+--> Creates SELECT privileges to anyone on local host
+	mysql --user=hugh --host=localhost  --> allowed
+	mysql --user=fred --> allowed
+	mysql --> allowed
+
+
+
+6) You’ve been employed to evaluate the security of a MySQL installation. Assuming that you’re 
+already satisfied with the security configuration from the physical and operating system 
+perspective, list four things that you’d check about the MySQL server. For each item, explain 
+why you would check it and what you would expect the outcome to be.
+
+I would want to check the following 4 items:
+
+Clients - From whose computer does this need to be accessed? I would try to keep it local. If other clients have access, I would want to understand why they need access, not just that they want it.
+
+Users - Who needs to access besides the root use? I would want to make sure folks have minimum privileges. I might partition the database or I might see if access to the database can be done through a single application
+
+Privileges - I would try to keep these as narrow as possible (without sacrificing performance). For example, do they really need access to an entire database, or will select columns or tables be OK
+
+Interactions -- Look at the use cases. Some folks may need a combination of privileges on local, and some may need a different set on remote, etc...
+
+
+7) You’ve recently installed a wireless access point for visitors to your office and configured 
+it so that machines that connect through it have IP addresses in the range 192.168.1.1 to 
+192.168.1.254. You’ve decided you want users who connect to your MySQL server from those IP 
+addresses to have only the SELECT privilege on the contacts database. What steps do you take 
+in your MySQL privilege tables to set this up?
+
+GRANT SELECT ON contacts.* to ''@192.168.1.%';
+
+The other thing one might want to consider is setting the MAX_USER_CONNEC to set limits on number of users that can come in through here. Same may apply to the number of queries per hour, etc� to limit system load.
+
+
+

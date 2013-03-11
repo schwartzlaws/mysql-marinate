@@ -139,9 +139,10 @@ For INNER JOIN the order doesn't matter.
 
 
 6) Why do these queries give different results? What does this tell you
-about using join conditions in the ON clause versus in the JOIN clause
+about using join conditions in the ON clause versus in the WHERE clause
 for LEFT (and RIGHT) JOINs?
 
+<<<<<<< HEAD
 SELECT track_name, track.artist_id, COUNT(played) 
 FROM track 
 LEFT JOIN played ON (track.artist_id=played.artist_id 
@@ -241,3 +242,18 @@ In the second case we pull all the artists that were played based on a WHERE che
 
 The second case yields more restrictive (narrow) results.  
 
+=======
+SELECT track_name, track.album_id, COUNT(played) 
+FROM track
+LEFT JOIN played ON (track.track_id=played.track_id 
+AND track.album_id=played.album_id)
+WHERE track.artist_id=3
+GROUP BY track_name, track.album_id;
+
+SELECT track_name, track.album_id, COUNT(played)
+FROM track
+LEFT JOIN played ON (track.album_id=played.album_id)
+WHERE track.track_id=played.track_id
+AND track.artist_id=3
+GROUP BY track_name, track.album_id;
+>>>>>>> upstream/master
