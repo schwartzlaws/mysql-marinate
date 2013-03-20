@@ -18,7 +18,12 @@ SELECT, UPDATE, and INSERT statements on the contacts and appointment databases.
 The user should be allowed to access the server from machines in the domain invyhome.com.
 
 
-GRANT SELECT, UPDATE, INSERT ON contacts.*, appointment.* to 'rowena'@'*.invyhome.com';
+mysql> GRANT SELECT, UPDATE, INSERT ON contacts.* TO 'rowena'@'*.invyhome.com';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT SELECT, UPDATE, INSERT ON appointment.* TO 'rowena'@'*.invyhome.com';
+Query OK, 0 rows affected (0.01 sec)
+
 
 4) Write a GRANT statement that modifies the privileges of the user rowena created in 
 Question 3. Add privileges to SELECT from the customer table in the sales database, and to 
