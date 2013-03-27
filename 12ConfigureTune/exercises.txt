@@ -1,0 +1,54 @@
+1) Why is it important to allocate a large value to read_buffer_size?
+
+If you are doing a lot of reading (for example, going through and looking for something that is not in an index), than a lot of disk reads will be required. This is where setting read_buffer_size to a large value makes an impact. It's faster to read a small number of large data chunks from disk. 
+
+
+2) What is the advantage of caching query results?
+
+Oooh, I love caching. Efficient caching is at the heart of the EMC Symmetrix storage system, a produce line I worked on for many years.
+
+But I digress.
+
+Basically, queries require disk access, which is slow. More frequently used queries, especially on data that is not changing relatively frequently,  can be cached and hence accessed much much faster (by orders of magnitude). 
+
+
+
+3) What does the OPTIMIZE TABLE command do?
+
+Significant changes to a table (for example, deleting many entries) can impact table performance as the table layout may fragment and no longer be optimal. "OPTIMIZE TABLE" can address this.
+
+And now the bonus round… What does OPTIMIZE TABLE do when TokuDB is the underlying storage engine?
+
+Well, when things like column additions are done, they are immediately available, and the underlying work is done in the background. Running an OPTIMIZE TABLE flushes this background work (makes it happen quicker rather than a longer background process). Note though that for TokuDB, OPTIMIZE TABLE does not need to rebuild indexes since TokuDB doesn't fragment.  
+
+See http://www.tokutek.com/2012/01/announcing-tokudb-v5-2-improved-multi-client-scaling-and-faster-queries/ for more details
+
+
+4) If you set read_buffer_size too large, what do you think would happen?
+
+I suppose (but may be wrong) that if it is very large, then the disk could be kept buys doing a really really long read, which might impact the ability to sneak in occasional write update operations. That would be bad if the data is being updated frequently and could cause a bottleneck. 
+
+I also see others noting that smaller sizes can improve cache locality and make it easier for the OS to manage memory. See http://www.mysqlperformanceblog.com/2006/06/06/are-larger-buffers-always-better/
+
+5) Set the slow query log on and set the long_query_time to 1. Run the following query:
+
+SELECT SLEEP(2);
+
+and paste what appears in the slow query log. If you need help setting up the slow query log,
+see http://dev.mysql.com/doc/refman/5.5/en/slow-query-log.html. By now you should be familiar enough
+with MySQL concepts to be able to read the manual pages and understand what is being written.
+
+Here is the paste:
+
+   /usr/local/mysql/bin/mysqld, Version: 5.5.29 (MySQL Community Server (GPL)). started with:
+   Tcp port: 3306  Unix socket: /tmp/mysql.sock
+   Time                 Id Command    Argument
+   # Time: 130326 22:09:26
+   # User@Host: root[root] @ localhost []
+   # Query_time: 2.000262  Lock_time: 0.000000 Rows_sent: 1  Rows_examined: 0
+   SET timestamp=1364350166;
+   SELECT SLEEP(2);
+
+Here we set the slow query log to 1 second and then ran a command that would take longer than 1 second (2 second sleep) hence it shows up in the slow query log.
+
+Per http://dba.stackexchange.com/questions/7777/write-a-slow-query-to-test-slow-query-logging this looks like a good way to test the slow query logger. 

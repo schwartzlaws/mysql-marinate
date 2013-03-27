@@ -1,0 +1,19 @@
+1) What issues would you consider before storing your password in an options file?
+
+If I was going to do this (which seems like a bad idea except for sandbox applications), I would be sure to limit access to the file (which can be set via chmod).
+
+2) On a Linux or Mac OS X system, under what circumstances would the [server] section
+of the ~/.my.cn options file be read?
+
+First of all the search order is /etc/my.cnf then <MySQL_Directory>/my.cnf, defaults-extra-file and only then does it go to ~/.my.cnf
+
+Within the file, some of these general settings though could be overwritten by the more specific section (ie, [mysql], etc…)
+
+
+3) How can you tell what options a program uses by default?
+
+To see options, one could do 
+
+     $ mysqldump --print-defaults
+
+
